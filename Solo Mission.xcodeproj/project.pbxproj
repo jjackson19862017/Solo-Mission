@@ -37,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DCF21E54245B7CE000271BE9 /* laser.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = laser.wav; path = "/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/laser.wav"; sourceTree = "<absolute>"; };
+		DCF21E55245B930300271BE9 /* Impact.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Impact.caf; path = "/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/Impact.caf"; sourceTree = "<absolute>"; };
 		DCF8C4EB245B0FE500F653EF /* Solo Mission.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solo Mission.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCF8C4EE245B0FE500F653EF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DCF8C4F0245B0FE500F653EF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -103,6 +105,8 @@
 		DCF8C4ED245B0FE500F653EF /* Solo Mission */ = {
 			isa = PBXGroup;
 			children = (
+				DCF21E54245B7CE000271BE9 /* laser.wav */,
+				DCF21E55245B930300271BE9 /* Impact.caf */,
 				DCF8C4EE245B0FE500F653EF /* AppDelegate.swift */,
 				DCF8C4F0245B0FE500F653EF /* GameScene.sks */,
 				DCF8C4F2245B0FE500F653EF /* Actions.sks */,

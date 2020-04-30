@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:bulletsound.wav">
+      location = "group:/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/Impact.caf">
    </FileRef>
    <FileRef
-      location = "self:Solo Mission.xcodeproj">
+      location = "group:/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/laser.wav">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>
