@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:bulletsound.wav">
+   </FileRef>
+   <FileRef
       location = "self:Solo Mission.xcodeproj">
    </FileRef>
 </Workspace>
