@@ -9,9 +9,11 @@
 import SpriteKit
 import GameplayKit
 
+var gameScore = 0
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    var gameScore = 0
+    
     let scoreLabel = SKLabelNode(fontNamed: "The Bold Font")
     
     var levelNumber = 0
@@ -23,6 +25,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let player = SKSpriteNode(imageNamed: "playerShip") // Declare a Player
     let bulletsound = SKAction.playSoundFileNamed("laser.wav", waitForCompletion: false) // Load sound effect to cancel any lag
     let explodesound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false) // Load sound effect to cancel any lag
+    
+    enum gameState{
+        case preGame // Before start of game
+        case inGame // During game
+        case afterGame // After the game, when its finished
+    }
+    
+    var currentGameState = gameState.inGame
     
     struct PhysicsCategories {
         static let None : UInt32 = 0
@@ -60,6 +70,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func didMove(to view: SKView) {
+        
+        gameScore = 0
+        
         
         self.physicsWorld.contactDelegate = self // Collision Detection
         
@@ -114,6 +127,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let scaleSequence = SKAction.sequence([scaleUp, scaleDown])
         livesLabel.run(scaleSequence)
         
+        if livesNumber == 0 {
+            runGameOver()
+        }
+        
     }
     
     func addScore() {
@@ -123,6 +140,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameScore == 10 || gameScore == 25 || gameScore == 50 {
             startNewLevel()
         }
+    }
+    
+    func runGameOver(){
+        
+        currentGameState = gameState.afterGame
+        // Freezes all objects on screen
+        self.removeAllActions()
+
+        self.enumerateChildNodes(withName: "Bullet"){
+            (bullet, stop) in
+            bullet.removeAllActions()
+        }
+        
+        self.enumerateChildNodes(withName: "Enemy"){
+            (enemy, stop) in
+            enemy.removeAllActions()
+        }
+        
+        let changeSceneAction = SKAction.run(changeScene)
+        let waitToChangeScene = SKAction.wait(forDuration: 1)
+        let changeSceneSequence = SKAction.sequence([waitToChangeScene, changeSceneAction])
+        self.run(changeSceneSequence)
+    }
+    
+    func changeScene(){
+        let sceneToMoveTo = GameOverScene(size: self.size) // Sets the GameOverScene as the same size as game screen
+        sceneToMoveTo.scaleMode = self.scaleMode // Sets the GameOverScene as the same scale as game screen
+        let myTransition = SKTransition.fade(withDuration: 0.5) // Fades to the next scene over half a second
+        self.view!.presentScene(sceneToMoveTo, transition: myTransition)
     }
     
     // Did the Objects have contact with each other?
@@ -163,6 +209,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             body1.node?.removeFromParent() // Delete Player
             body2.node?.removeFromParent() // Delete Enemy
+            
+            runGameOver()
         }
         
         if body1.categoryBitMask == PhysicsCategories.Bullet && body2.categoryBitMask == PhysicsCategories.Enemy {
@@ -242,6 +290,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func fireBullet() {
         
         let bullet = SKSpriteNode(imageNamed: "bullet")
+        bullet.name = "Bullet"
         bullet.setScale(1) // If you want the bullet bigger you can change it to a higher number
         bullet.position = player.position // Sets the bullet firing position
         bullet.zPosition = 1 // This will be underneath the Ship but on top of the background
@@ -267,6 +316,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let endPoint = CGPoint(x: randomXEnd, y: -self.size.height * 0.2) // Works out 20% below the height of area
     
         let enemy = SKSpriteNode(imageNamed: "enemyShip")
+        enemy.name = "Enemy"
         enemy.setScale(1) // If you want the enemy bigger you can change it to a higher number
         enemy.position = startPoint // Sets the enemys position
         enemy.zPosition = 2 // Same level as players ship
@@ -281,8 +331,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let deleteEnemy = SKAction.removeFromParent() // Deletes enemy from memory
         let loseALifeAction = SKAction.run(loseALife) // Runs the block LoseALife
         let enemySquence = SKAction.sequence([moveEnemy, deleteEnemy, loseALifeAction]) // Once enemy has reached the bottom of the screen, Delete it
+        
+        // If the game is inGame
+        if currentGameState == gameState.inGame {
         enemy.run(enemySquence) // Run enemy sequence
-    
+        }
+        
         // Allows to rotate an image from facing right to looking down.
         let dx = endPoint.x - startPoint.x
         let dy = endPoint.y - startPoint.y
@@ -295,8 +349,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // When screen is touched
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
+        // If the game is inGame
+        if currentGameState == gameState.inGame {
         fireBullet()
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -308,7 +364,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let amountDragged = pointOfTouch.x - previousPointOfTouch.x // Work out difference
             
+            // If the game is inGame
+            if currentGameState == gameState.inGame {
             player.position.x += amountDragged // Moves ship left or right
+            }
+            
             // If the ship goes to far Right, the player.size.width allows all the ship to stay on screen instead of half
             if player.position.x > gameArea.maxX - player.size.width/2{
                 player.position.x = gameArea.maxX - player.size.width/2
