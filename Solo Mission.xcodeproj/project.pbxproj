@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC9B3E2D245E1ECC00295D13 /* MainMenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9B3E2C245E1ECC00295D13 /* MainMenuScene.swift */; };
 		DCF8C4EF245B0FE500F653EF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF8C4EE245B0FE500F653EF /* AppDelegate.swift */; };
 		DCF8C4F1245B0FE500F653EF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = DCF8C4F0245B0FE500F653EF /* GameScene.sks */; };
 		DCF8C4F3245B0FE500F653EF /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = DCF8C4F2245B0FE500F653EF /* Actions.sks */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DC9B3E2C245E1ECC00295D13 /* MainMenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuScene.swift; sourceTree = "<group>"; };
 		DCF21E54245B7CE000271BE9 /* laser.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = laser.wav; path = "/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/laser.wav"; sourceTree = "<absolute>"; };
 		DCF8C4EB245B0FE500F653EF /* Solo Mission.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solo Mission.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCF8C4EE245B0FE500F653EF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				DCFE6F0C245DBEAD009A1F90 /* theBoldFont.ttf */,
 				DCF8C4F2245B0FE500F653EF /* Actions.sks */,
 				DCF8C4F4245B0FE500F653EF /* GameScene.swift */,
+				DC9B3E2C245E1ECC00295D13 /* MainMenuScene.swift */,
 				DCFE6F12245DD792009A1F90 /* GameOverScene.swift */,
 				DCF8C4F6245B0FE500F653EF /* GameViewController.swift */,
 				DCF8C4F8245B0FE500F653EF /* Main.storyboard */,
@@ -282,6 +285,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC9B3E2D245E1ECC00295D13 /* MainMenuScene.swift in Sources */,
 				DCF8C4F5245B0FE500F653EF /* GameScene.swift in Sources */,
 				DCF8C4F7245B0FE500F653EF /* GameViewController.swift in Sources */,
 				DCFE6F13245DD792009A1F90 /* GameOverScene.swift in Sources */,
