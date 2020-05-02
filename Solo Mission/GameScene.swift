@@ -11,9 +11,18 @@ import GameplayKit
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    var gameScore = 0
+    let scoreLabel = SKLabelNode(fontNamed: "The Bold Font")
+    
+    var levelNumber = 0
+    
+    var livesNumber = 3
+    let livesLabel = SKLabelNode(fontNamed: "The Bold Font")
+    
+    
     let player = SKSpriteNode(imageNamed: "playerShip") // Declare a Player
     let bulletsound = SKAction.playSoundFileNamed("laser.wav", waitForCompletion: false) // Load sound effect to cancel any lag
-    let explodesound = SKAction.playSoundFileNamed("impact.caf", waitForCompletion: false) // Load sound effect to cancel any lag
+    let explodesound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false) // Load sound effect to cancel any lag
     
     struct PhysicsCategories {
         static let None : UInt32 = 0
@@ -74,7 +83,46 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody!.contactTestBitMask = PhysicsCategories.Enemy  // Has Contact with Enemy and lets us know
         self.addChild(player) // Creates the player Object
         
+        scoreLabel.text = "Score: 0" // Set Default Text
+        scoreLabel.fontSize = 70 // Font Size
+        scoreLabel.fontColor = SKColor.white // Font Colour
+        scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left // Label Alignment to the Left
+        scoreLabel.position = CGPoint(x: self.size.width*0.15, y: self.size.height*0.9) // X is going to be 15% across the screen so its not choped off any devices, Y is going to be 90% of the devices.
+        scoreLabel.zPosition = 100 // Z Value is High so its on top of everything
+        self.addChild(scoreLabel) // Create the scoreLabel
+        
+        livesLabel.text = "Lives: 3" // Set Default Text
+        livesLabel.fontSize = 70 // Font Size
+        livesLabel.fontColor = SKColor.white // Font Colour
+        livesLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right // Label Alignment to the Left
+        livesLabel.position = CGPoint(x: self.size.width*0.85, y: self.size.height*0.9) // X is going to be 85% across the screen so its not choped off any devices, Y is going to be 90% of the devices.
+        livesLabel.zPosition = 100 // Z Value is High so its on top of everything
+        self.addChild(livesLabel) // Create the scoreLabel
+        
+        
         startNewLevel()
+    
+    }
+    
+    func loseALife(){
+        
+        livesNumber -= 1
+        livesLabel.text = "Lives: \(livesNumber)"
+        
+        let scaleUp = SKAction.scale(to: 1.5, duration: 0.2)
+        let scaleDown = SKAction.scale(to: 1, duration: 0.2)
+        let scaleSequence = SKAction.sequence([scaleUp, scaleDown])
+        livesLabel.run(scaleSequence)
+        
+    }
+    
+    func addScore() {
+        gameScore += 1
+        scoreLabel.text = "Score: \(gameScore)"
+        
+        if gameScore == 10 || gameScore == 25 || gameScore == 50 {
+            startNewLevel()
+        }
     }
     
     // Did the Objects have contact with each other?
@@ -120,6 +168,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if body1.categoryBitMask == PhysicsCategories.Bullet && body2.categoryBitMask == PhysicsCategories.Enemy {
             // If the bullet has hit the enemy
             
+            addScore()
+            
             if body2.node != nil {
             // Only run if object exists, avoids crashing game
                 if body2.node!.position.y > self.size.height{
@@ -131,7 +181,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             }
             
-            
+      
             body1.node?.removeFromParent() // Delete Bullet
             body2.node?.removeFromParent() // Delete Enemy
         }
@@ -159,11 +209,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func startNewLevel() {
         
+        levelNumber += 1
+        // Stops Sequence from running
+        if self.action(forKey: "spawningEnemies") != nil {
+            // If this is running it will stop spawning enemies
+            self.removeAction(forKey: "spawningEnemies")
+        }
+        
+        var levelDuration = TimeInterval()
+        
+        switch levelNumber {
+        case 1: levelDuration = 1.2
+        case 2: levelDuration = 1
+        case 3: levelDuration = 0.8
+        case 4: levelDuration = 0.5
+        default:
+            levelDuration = 0.5
+            print("Cannot find level info")
+        }
+        
         let spawn = SKAction.run(spawnEnemy)
-        let waitToSpawn = SKAction.wait(forDuration: 1)
-        let spawnSequence = SKAction.sequence([spawn, waitToSpawn])
+        let waitToSpawn = SKAction.wait(forDuration: levelDuration)
+        let spawnSequence = SKAction.sequence([waitToSpawn, spawn ])
         let spawnForever = SKAction.repeatForever(spawnSequence)
-        self.run(spawnForever)
+        self.run(spawnForever, withKey: "spawningEnemies") // Assigns a key to this section of code
         
     }
     
@@ -210,7 +279,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let moveEnemy = SKAction.move(to: endPoint, duration: 1.5) // Move enemy from top to bottom of screen
         let deleteEnemy = SKAction.removeFromParent() // Deletes enemy from memory
-        let enemySquence = SKAction.sequence([moveEnemy, deleteEnemy]) // Once enemy has reached the bottom of the screen, Delete it
+        let loseALifeAction = SKAction.run(loseALife) // Runs the block LoseALife
+        let enemySquence = SKAction.sequence([moveEnemy, deleteEnemy, loseALifeAction]) // Once enemy has reached the bottom of the screen, Delete it
         enemy.run(enemySquence) // Run enemy sequence
     
         // Allows to rotate an image from facing right to looking down.

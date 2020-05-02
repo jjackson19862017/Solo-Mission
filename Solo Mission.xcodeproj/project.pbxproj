@@ -17,6 +17,9 @@
 		DCF8C4FF245B0FE900F653EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCF8C4FD245B0FE900F653EF /* LaunchScreen.storyboard */; };
 		DCF8C50A245B0FE900F653EF /* Solo_MissionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF8C509245B0FE900F653EF /* Solo_MissionTests.swift */; };
 		DCF8C515245B0FE900F653EF /* Solo_MissionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF8C514245B0FE900F653EF /* Solo_MissionUITests.swift */; };
+		DCFE6F0D245DBEAD009A1F90 /* theBoldFont.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCFE6F0C245DBEAD009A1F90 /* theBoldFont.ttf */; };
+		DCFE6F0E245DBEC9009A1F90 /* laser.wav in Resources */ = {isa = PBXBuildFile; fileRef = DCF21E54245B7CE000271BE9 /* laser.wav */; };
+		DCFE6F11245DC20A009A1F90 /* explosion.wav in Resources */ = {isa = PBXBuildFile; fileRef = DCFE6F10245DC20A009A1F90 /* explosion.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +41,6 @@
 
 /* Begin PBXFileReference section */
 		DCF21E54245B7CE000271BE9 /* laser.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = laser.wav; path = "/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/laser.wav"; sourceTree = "<absolute>"; };
-		DCF21E55245B930300271BE9 /* Impact.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Impact.caf; path = "/Users/stephen/Dev Folder/Xcode/Solo Mission/Solo Mission/Solo Mission/Impact.caf"; sourceTree = "<absolute>"; };
 		DCF8C4EB245B0FE500F653EF /* Solo Mission.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Solo Mission.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCF8C4EE245B0FE500F653EF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DCF8C4F0245B0FE500F653EF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -55,6 +57,8 @@
 		DCF8C510245B0FE900F653EF /* Solo MissionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Solo MissionUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCF8C514245B0FE900F653EF /* Solo_MissionUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solo_MissionUITests.swift; sourceTree = "<group>"; };
 		DCF8C516245B0FE900F653EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCFE6F0C245DBEAD009A1F90 /* theBoldFont.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = theBoldFont.ttf; sourceTree = "<group>"; };
+		DCFE6F10245DC20A009A1F90 /* explosion.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = explosion.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,9 +110,10 @@
 			isa = PBXGroup;
 			children = (
 				DCF21E54245B7CE000271BE9 /* laser.wav */,
-				DCF21E55245B930300271BE9 /* Impact.caf */,
 				DCF8C4EE245B0FE500F653EF /* AppDelegate.swift */,
 				DCF8C4F0245B0FE500F653EF /* GameScene.sks */,
+				DCFE6F10245DC20A009A1F90 /* explosion.wav */,
+				DCFE6F0C245DBEAD009A1F90 /* theBoldFont.ttf */,
 				DCF8C4F2245B0FE500F653EF /* Actions.sks */,
 				DCF8C4F4245B0FE500F653EF /* GameScene.swift */,
 				DCF8C4F6245B0FE500F653EF /* GameViewController.swift */,
@@ -242,8 +247,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCFE6F11245DC20A009A1F90 /* explosion.wav in Resources */,
+				DCFE6F0E245DBEC9009A1F90 /* laser.wav in Resources */,
 				DCF8C4FA245B0FE500F653EF /* Main.storyboard in Resources */,
 				DCF8C4F1245B0FE500F653EF /* GameScene.sks in Resources */,
+				DCFE6F0D245DBEAD009A1F90 /* theBoldFont.ttf in Resources */,
 				DCF8C4FC245B0FE900F653EF /* Assets.xcassets in Resources */,
 				DCF8C4FF245B0FE900F653EF /* LaunchScreen.storyboard in Resources */,
 				DCF8C4F3245B0FE500F653EF /* Actions.sks in Resources */,
