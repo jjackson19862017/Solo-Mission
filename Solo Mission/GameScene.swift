@@ -26,13 +26,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let bulletsound = SKAction.playSoundFileNamed("laser.wav", waitForCompletion: false) // Load sound effect to cancel any lag
     let explodesound = SKAction.playSoundFileNamed("explosion.wav", waitForCompletion: false) // Load sound effect to cancel any lag
     
+    let tapToStartLabel = SKLabelNode(fontNamed: "The Bold Font")
     enum gameState{
         case preGame // Before start of game
         case inGame // During game
         case afterGame // After the game, when its finished
     }
     
-    var currentGameState = gameState.inGame
+    var currentGameState = gameState.preGame
     
     struct PhysicsCategories {
         static let None : UInt32 = 0
@@ -40,9 +41,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         static let Bullet : UInt32 = 0b10 // 2
         static let Enemy : UInt32 = 0b100 // 4
     }
-    
-    
-    
     
     func random() -> CGFloat {
         return CGFloat(Float(arc4random()) / 0xFFFFFFFF)
@@ -79,15 +77,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         // Setup Background Scene
+        for i in 0...1{
         let background = SKSpriteNode(imageNamed: "background")
         background.size = self.size // Sets background to the scene size
-        background.position = CGPoint(x: self.size.width/2, y: self.size.height/2) // Centers it both horizontal and vertical
+        background.anchorPoint = CGPoint(x: 0.5, y: 0) // Sets the Anchor point to the bottom middle of the screen
+        background.position = CGPoint(x: self.size.width/2,
+                                      y: self.size.height*CGFloat(i)) // Centers it horizontal and the first background sits at the bottom of the screen and the second background view sits at the top of the screen
         background.zPosition = 0 // Sets background to the bottom so other objects sit on top of it.
+        background.name = "Background"
         self.addChild(background) // Creates the background Object
-        
+        }
         // Setup Player
         player.setScale(1) // If you want the ship bigger you can change it to a higher number
-        player.position = CGPoint(x: self.size.width/2, y: self.size.height * 0.2) // Puts it in the middle of the screen horizontally, and 20% from the bottom of the screen
+        player.position = CGPoint(x: self.size.width/2, y: self.size.height * 0 - player.size.height) // Puts it in the middle of the screen horizontally, and off the bottom of the screen
         player.zPosition = 2 // Its not 1 because the bullets will be 1
         player.physicsBody = SKPhysicsBody(rectangleOf: player.size) // Makes the player have a physic property
         player.physicsBody!.affectedByGravity = false // Not affected by gravity
@@ -100,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontSize = 70 // Font Size
         scoreLabel.fontColor = SKColor.white // Font Colour
         scoreLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left // Label Alignment to the Left
-        scoreLabel.position = CGPoint(x: self.size.width*0.15, y: self.size.height*0.9) // X is going to be 15% across the screen so its not choped off any devices, Y is going to be 90% of the devices.
+        scoreLabel.position = CGPoint(x: self.size.width*0.15, y: self.size.height + scoreLabel.frame.size.height) // X is going to be 15% across the screen so its not choped off any devices, Y is going to be off the screen
         scoreLabel.zPosition = 100 // Z Value is High so its on top of everything
         self.addChild(scoreLabel) // Create the scoreLabel
         
@@ -108,14 +110,77 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         livesLabel.fontSize = 70 // Font Size
         livesLabel.fontColor = SKColor.white // Font Colour
         livesLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right // Label Alignment to the Left
-        livesLabel.position = CGPoint(x: self.size.width*0.85, y: self.size.height*0.9) // X is going to be 85% across the screen so its not choped off any devices, Y is going to be 90% of the devices.
+        livesLabel.position = CGPoint(x: self.size.width*0.85, y: self.size.height + livesLabel.frame.size.height) // X is going to be 85% across the screen so its not choped off any devices, Y is going to be off the screen
         livesLabel.zPosition = 100 // Z Value is High so its on top of everything
         self.addChild(livesLabel) // Create the scoreLabel
         
+        let moveOnToScreenAction = SKAction.moveTo(y: self.size.height*0.9, duration: 0.3)
+        scoreLabel.run(moveOnToScreenAction)
+        livesLabel.run(moveOnToScreenAction)
         
-        startNewLevel()
+        
+        tapToStartLabel.text = "Tap To Begin" // Set Default Text
+        tapToStartLabel.fontSize = 100 // Font Size
+        tapToStartLabel.fontColor = SKColor.white // Font Colour
+        tapToStartLabel.zPosition = 1 // Z Value is on top of background
+        tapToStartLabel.position = CGPoint(x: self.size.width/2, y: self.size.height/2) // Middle of Screen
+        tapToStartLabel.alpha = 0 // Make it invisible
+        self.addChild(tapToStartLabel) // Create the tapToStartLabel
+        
+        let fadeInAction = SKAction.fadeIn(withDuration: 0.3) // Fade in over 0.3 Seconds
+        tapToStartLabel.run(fadeInAction)
+       
     
     }
+    
+    var lastUpdateTime: TimeInterval = 0
+    var deltaFrameTime: TimeInterval = 0
+    var amountToMovePerSecond: CGFloat = 600.0
+    
+    // Runs every frame of the game
+    override func update(_ currentTime: TimeInterval) {
+        // We need to workout how much time has elapsed
+        
+        // This is the first frame
+        if lastUpdateTime == 0 {
+            lastUpdateTime = currentTime // Updates to current time
+        }
+        else {
+            deltaFrameTime = currentTime - lastUpdateTime // How much time has passed
+            lastUpdateTime = currentTime // Updates to current time
+        }
+        
+        let amountToMoveBackground = amountToMovePerSecond * CGFloat(deltaFrameTime)
+        
+        self.enumerateChildNodes(withName: "Background"){
+            (background, stop) in
+            
+            if self.currentGameState == gameState.inGame{
+            background.position.y -= amountToMoveBackground
+            }
+            if background.position.y < -self.size.height {
+                background.position.y += self.size.height*2
+            }
+        }
+    }
+    
+    func startGame(){
+        
+        currentGameState = gameState.inGame // Changes Game State to be in Game
+        
+        let fadeOutAction = SKAction.fadeOut(withDuration: 0.5) // Fades out
+        let deleteAction = SKAction.removeFromParent() // Deletes
+        let deleteSequence = SKAction.sequence([fadeOutAction, deleteAction]) // Fades out and then deletes Tap To Start Label
+        tapToStartLabel.run(deleteSequence) // Runs Sequence
+        
+        let moveShipOntoScreenAction = SKAction.moveTo(y: self.size.height*0.2, duration: 0.5) // Moves player ship on to screen
+        let startLevelAction = SKAction.run(startNewLevel) // Runs the startNewLevel Block
+        let startGameSequence = SKAction.sequence([moveShipOntoScreenAction, startLevelAction]) // Moves ship then starts game
+        player.run(startGameSequence) // Runs Sequence
+        
+    }
+    
+    
     
     func loseALife(){
         
@@ -349,8 +414,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // When screen is touched
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // If the game is preGame
+        if currentGameState == gameState.preGame {
+            startGame()
+        }
+        
         // If the game is inGame
-        if currentGameState == gameState.inGame {
+            // The else stops a bullet from being fired straight away
+        else if currentGameState == gameState.inGame {
         fireBullet()
         }
     }
