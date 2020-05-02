@@ -9,11 +9,26 @@
 import UIKit
 import SpriteKit
 import GameplayKit
+import AVFoundation
+
 
 class GameViewController: UIViewController {
 
+    var backingAudio = AVAudioPlayer()
+        
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let filePath = Bundle.main.path(forResource: "backingaudio", ofType: "mp3")
+        let audioNSURL = NSURL(fileURLWithPath: filePath!)
+        
+        // Required by Apple as error catching
+        do { backingAudio = try AVAudioPlayer(contentsOf: audioNSURL as URL)}
+        catch { return print("Cannot Find The Audio")}
+        
+        backingAudio.numberOfLoops = -1 // Loops forever
+        backingAudio.play()
+        
         
         if let view = self.view as! SKView? {
             // Load the SKScene from 'GameScene.sks'
@@ -26,8 +41,8 @@ class GameViewController: UIViewController {
             
             view.ignoresSiblingOrder = true
             
-            view.showsFPS = true
-            view.showsNodeCount = true
+            view.showsFPS = false
+            view.showsNodeCount = false
         }
     }
 
