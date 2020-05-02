@@ -309,7 +309,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         explosion.setScale(0)
         self.addChild(explosion)
         
-        let scaleIn = SKAction.scale(to: 1, duration: 0.1)
+        let scaleIn = SKAction.scale(to: 3, duration: 0.1)
         let fadeOut = SKAction.fadeOut(withDuration: 0.1)
         let delete = SKAction.removeFromParent()
         
@@ -356,7 +356,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let bullet = SKSpriteNode(imageNamed: "bullet")
         bullet.name = "Bullet"
-        bullet.setScale(1) // If you want the bullet bigger you can change it to a higher number
+        bullet.setScale(1.5) // If you want the bullet bigger you can change it to a higher number
         bullet.position = player.position // Sets the bullet firing position
         bullet.zPosition = 1 // This will be underneath the Ship but on top of the background
         bullet.physicsBody = SKPhysicsBody(rectangleOf: bullet.size) // Makes the bullet have a physic property
@@ -366,7 +366,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bullet.physicsBody!.contactTestBitMask = PhysicsCategories.Enemy // Has Contact with Enemy and lets us know
         self.addChild(bullet) // Creates the bullet Object
         
-        let moveBullet = SKAction.moveTo(y: self.size.height + bullet.size.height, duration: 1) // Move bullet from ship to top of screen
+        let moveBullet = SKAction.moveTo(y: self.size.height + bullet.size.height, duration: 3) // Move bullet from ship to top of screen
         let deleteBullet = SKAction.removeFromParent() // Deletes bullet from memory
         let bulletSequence = SKAction.sequence([bulletsound, moveBullet, deleteBullet]) // Once bullet has reached the top of the screen, Delete it
         bullet.run(bulletSequence) // Run bullet sequence
@@ -382,7 +382,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
         let enemy = SKSpriteNode(imageNamed: "enemyShip")
         enemy.name = "Enemy"
-        enemy.setScale(1) // If you want the enemy bigger you can change it to a higher number
+        enemy.setScale(1.5) // If you want the enemy bigger you can change it to a higher number
         enemy.position = startPoint // Sets the enemys position
         enemy.zPosition = 2 // Same level as players ship
         enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size) // Makes the enemy have a physic property
@@ -392,7 +392,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody!.contactTestBitMask = PhysicsCategories.Player | PhysicsCategories.Bullet // Has Contact and lets us know
         self.addChild(enemy) // Creates the enemy Object
         
-        let moveEnemy = SKAction.move(to: endPoint, duration: 1.5) // Move enemy from top to bottom of screen
+        let moveEnemy = SKAction.move(to: endPoint, duration: 3) // Move enemy from top to bottom of screen
         let deleteEnemy = SKAction.removeFromParent() // Deletes enemy from memory
         let loseALifeAction = SKAction.run(loseALife) // Runs the block LoseALife
         let enemySquence = SKAction.sequence([moveEnemy, deleteEnemy, loseALifeAction]) // Once enemy has reached the bottom of the screen, Delete it
