@@ -21,6 +21,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var livesNumber = 3
     let livesLabel = SKLabelNode(fontNamed: "The Bold Font")
     
+    let bulletLabel = SKLabelNode(fontNamed: "The Bold Font")
+    var bulletNumber = 0
     
     let player = SKSpriteNode(imageNamed: "playerShip") // Declare a Player
     let bulletsound = SKAction.playSoundFileNamed("laser.wav", waitForCompletion: false) // Load sound effect to cancel any lag
@@ -112,11 +114,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         livesLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.right // Label Alignment to the Left
         livesLabel.position = CGPoint(x: self.size.width*0.85, y: self.size.height + livesLabel.frame.size.height) // X is going to be 85% across the screen so its not choped off any devices, Y is going to be off the screen
         livesLabel.zPosition = 100 // Z Value is High so its on top of everything
-        self.addChild(livesLabel) // Create the scoreLabel
+        self.addChild(livesLabel) // Create the livesLabel
         
         let moveOnToScreenAction = SKAction.moveTo(y: self.size.height*0.9, duration: 0.3)
+        let moveOnToScreenFromBottomAction = SKAction.moveTo(y: self.size.height*0.1, duration: 0.3)
+        
+        bulletLabel.text = "Rockets: 5" // Set Default Text
+        bulletLabel.fontSize = 70 // Font Size
+        bulletLabel.fontColor = SKColor.white // Font Colour
+        bulletLabel.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left // Label Alignment to the Left
+        bulletLabel.position = CGPoint(x: self.size.width*0.15, y: 0) // X is going to be 85% across the screen so its not choped off any devices, Y is going to be off the screen
+        bulletLabel.zPosition = 100 // Z Value is High so its on top of everything
+        self.addChild(bulletLabel) // Create the bulletLabel
+        
         scoreLabel.run(moveOnToScreenAction)
         livesLabel.run(moveOnToScreenAction)
+        bulletLabel.run(moveOnToScreenFromBottomAction)
         
         
         tapToStartLabel.text = "Tap To Begin" // Set Default Text
@@ -207,6 +220,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func addBullet() {
+        bulletNumber += 1
+        bulletLabel.text = "Rockets: \(bulletNumber)"
+    }
+    
+    func firedbullet(){
+        bulletNumber -= 1
+        bulletLabel.text = "Rockets: \(bulletNumber)"
+        
+    }
+    
     func runGameOver(){
         
         currentGameState = gameState.afterGame
@@ -283,13 +307,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             addScore()
             
+            
             if body2.node != nil {
             // Only run if object exists, avoids crashing game
                 if body2.node!.position.y > self.size.height{
                     return //if the enemy is off the top of the screen, 'return'. This will stop running this code here, therefore doing nothing unless we hit the enemy when it's on the screen. As we are already checking that body2.node isn't nothing, we can safely unwrap (with '!)' this here.
                 }
                 else{
-            spawnExplosion(spawnPosition: body2.node!.position)
+                    addBullet()
+                    spawnExplosion(spawnPosition: body2.node!.position)
                 }
                 
             }
@@ -323,6 +349,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func startNewLevel() {
         
         levelNumber += 1
+        bulletNumber = 5 // Resets bullets in ship
         // Stops Sequence from running
         if self.action(forKey: "spawningEnemies") != nil {
             // If this is running it will stop spawning enemies
@@ -368,7 +395,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let moveBullet = SKAction.moveTo(y: self.size.height + bullet.size.height, duration: 3) // Move bullet from ship to top of screen
         let deleteBullet = SKAction.removeFromParent() // Deletes bullet from memory
-        let bulletSequence = SKAction.sequence([bulletsound, moveBullet, deleteBullet]) // Once bullet has reached the top of the screen, Delete it
+        let restockBullet = SKAction.run(addBullet)
+        let firedBullet = SKAction.run(firedbullet)
+        let bulletSequence = SKAction.sequence([bulletsound, firedBullet, moveBullet, deleteBullet, restockBullet]) // Once bullet has reached the top of the screen, Delete it
         bullet.run(bulletSequence) // Run bullet sequence
     }
     
@@ -421,7 +450,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // If the game is inGame
             // The else stops a bullet from being fired straight away
-        else if currentGameState == gameState.inGame {
+        else if currentGameState == gameState.inGame && bulletNumber > 0{
         fireBullet()
         }
     }
